@@ -1,52 +1,75 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./ExpenseForm.css";
-const ExpenseForm = (props) => {
-  const [TitleInput, InputHandler] = useState("");
-  const [AmountInput, cashHandler] = useState("");
-  const [dateInput, DateHandler] = useState("");
 
-  const TitleHandler = (event) => {
-    InputHandler(event.target.value);
-  };
-  const AmountHandler = (event) => {
-    cashHandler(event.target.value);
-  };
-  const TimeHandler = (event) => {
-    DateHandler(event.target.value);
-  };
-  const DayHandler = (event) => {
-    DateHandler(event.target.value);
-  };
-  const SubmitHandler = (event) => {
+const ExpenseForm = ({ onSaveExpenseData }) => {
+  const [enteredTitle, setEnteredTitle] = useState("");
+  const [enteredAmount, setEnteredAmount] = useState("");
+  const [enteredDate, setEnteredDate] = useState("");
+  const [error, setError] = useState("");
+
+  const submitHandler = (event) => {
     event.preventDefault();
-    const DataHandler = {
-      Title: TitleInput,
-      amount: AmountInput,
-      date: dateInput,
+
+    if (
+      enteredTitle.trim() === "" ||
+      enteredAmount.trim() === "" ||
+      enteredDate.trim() === ""
+    ) {
+      setError("Please fill in all the fields before submitting.");
+      return;
+    }
+
+    const expenseData = {
+      title: enteredTitle,
+      amount: +enteredAmount,
+      date: new Date(enteredDate),
     };
-    props.DateItems(DataHandler);
-    console.log(DataHandler);
+
+    onSaveExpenseData(expenseData);
+
+    // Reset form
+    setEnteredTitle("");
+    setEnteredAmount("");
+    setEnteredDate("");
+    setError("");
   };
+
   return (
-    <form onSubmit={SubmitHandler}>
+    <form onSubmit={submitHandler}>
       <div className="new-expense__controls">
         <div className="new-expense__control">
-          <lable>Title</lable>
-          <input type="text" onChange={TitleHandler} />
+          <label>Title</label>
+          <input
+            type="text"
+            value={enteredTitle}
+            onChange={(e) => setEnteredTitle(e.target.value)}
+          />
         </div>
         <div className="new-expense__control">
-          <lable>Amount</lable>
-          <input type="number" onChange={AmountHandler} />
+          <label>Amount</label>
+          <input
+            type="number"
+            value={enteredAmount}
+            onChange={(e) => setEnteredAmount(e.target.value)}
+          />
         </div>
         <div className="new-expense__control">
-          <lable>Date</lable>
-          <input type="date" onChange={DayHandler} />
+          <label>Date</label>
+          <input
+            type="date"
+            value={enteredDate}
+            onChange={(e) => setEnteredDate(e.target.value)}
+          />
         </div>
-        <div className="new-expense__actions">
-          <button type="submit">Add Expenses</button>
-        </div>
+      </div>
+
+      {error && <p className="expense-form__error">{error}</p>}
+
+      <div className="new-expense__actions">
+        <button type="submit">Add Expense</button>
       </div>
     </form>
   );
 };
+
 export default ExpenseForm;

@@ -5,6 +5,12 @@
   margin-bottom: 1rem;
   text-align: left;
 }
+.expense-form__error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
 
 .new-expense__control label {
   font-weight: bold;

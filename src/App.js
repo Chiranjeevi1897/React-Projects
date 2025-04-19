@@ -1,7 +1,8 @@
 import { useState } from "react";
 import ExpenseItem from "./components/ExpenseItem";
-import NewExpenses from "./components/NewExpenses.js";
-const expenses = [
+import NewExpenses from "./components/NewExpenses";
+
+const DUMMY_EXPENSES = [
   {
     id: "e1",
     title: "Toilet Paper",
@@ -22,38 +23,33 @@ const expenses = [
     date: new Date(2021, 5, 12),
   },
 ];
+
 const App = () => {
-  const [addedData, addHandler] = useState(expenses);
-  const AddExpenses = (expen) => {
-    addHandler((prevexpenses) => {
-      return [expen, ...prevexpenses];
-    });
-    console.log(expen);
+  const [expenses, setExpenses] = useState(DUMMY_EXPENSES);
+
+  const addExpenseHandler = (newExpense) => {
+    setExpenses((prevExpenses) => [newExpense, ...prevExpenses]);
+  };
+
+  const deleteExpenseHandler = (expenseId) => {
+    setExpenses((prevExpenses) =>
+      prevExpenses.filter((expense) => expense.id !== expenseId)
+    );
   };
 
   return (
     <div>
-      <NewExpenses newData={AddExpenses} />
-      <ExpenseItem
-        title={expenses[0].title}
-        amount={expenses[0].amount}
-        date={expenses[0].date}
-      />
-      <ExpenseItem
-        title={expenses[1].title}
-        amount={expenses[1].amount}
-        date={expenses[1].date}
-      />
-      <ExpenseItem
-        title={expenses[2].title}
-        amount={expenses[2].amount}
-        date={expenses[2].date}
-      />
-      <ExpenseItem
-        title={expenses[3].title}
-        amount={expenses[3].amount}
-        date={expenses[3].date}
-      />
+      <NewExpenses onAddExpense={addExpenseHandler} />
+      {expenses.map((expense) => (
+        <ExpenseItem
+          key={expense.id}
+          id={expense.id}
+          title={expense.title}
+          amount={expense.amount}
+          date={expense.date}
+          onDelete={deleteExpenseHandler}
+        />
+      ))}
     </div>
   );
 };
